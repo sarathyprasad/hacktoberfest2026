@@ -1,0 +1,30 @@
+databases:
+  - name: prithvi-fix-db
+    databaseName: prithvifix
+    user: prithvi_user
+    plan: free
+    region: singapore # or oregon / frankfurt
+    ipAllowList: [] # allow all connections
+
+services:
+  # Full-Stack Web Service (Backend + Static Frontend SPA)
+  - type: web
+    name: prithvi-fix-app
+    env: node
+    plan: free
+    region: singapore # or oregon / frankfurt
+    buildCommand: npm run build
+    startCommand: npm run seed && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: prithvi-fix-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ALLOW_ALL
+        value: "true"
+      - key: PORT
+        value: "10000"
